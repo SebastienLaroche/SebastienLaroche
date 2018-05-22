@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ProjFin</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="media/favicon%20(1).png"/>
+
+</head>
+<body>
+<header id="header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <img class="favicon" src="media/favicon.png">
+        <h1 class="titre">Vive Les Saucisses</h1>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="Acceuil.html">Acceuil</a>
+                <a class="nav-item nav-link" href="Portfolio.html">Portfolio</a>
+                <a class="nav-item nav-link" href="Formulaire.html">Formulaire</a>
+                <a class="nav-item nav-link " href="Libre.html">Libre</a>
+                <a class="nav-item nav-link active" href="Mini-Jeu.html">Mini-Jeu<span class="sr-only">(current)</span></a>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="col-1"></div>
+<div class="col-10">
+    <script src="pixi/pixi.min.js"></script>
+    <script src="js/jquery-3.3.1.js"></script>
+<script>
+    alert('les os ne s\'affichent pas pour une raison inconnue');
+    //Aliases
+    let Application = PIXI.Application,
+        Container = PIXI.Container,
+        loader = PIXI.loader,
+        resources = PIXI.loader.resources,
+        TextureCache = PIXI.utils.TextureCache,
+        Sprite = PIXI.Sprite;
+
+    //Create a Pixi Application
+    let app = new Application({
+            width: 1000,
+            height: 750,
+            antialiasing: true,
+            transparent: false,
+            resolution: 1,
+            backgroundColor:0x1099bb
+        }
+    );
+
+    //Add the canvas that Pixi automatically created for you to the HTML document
+    document.body.appendChild(app.view);
+
+    $('canvas').css("margin","auto");
+    $('canvas').css("display","block");
+
+    loader
+        .add("media/teckel.png")
+        .add("media/64527.png")
+        .load(setup);
+
+    //Define any variables that are used in more than one function
+    var cat, bone, bone1,bone2,bone3, state;
+
+    function setup() {
+
+        //Create the `cat` sprite
+        cat = new Sprite(resources["media/teckel.png"].texture);
+        cat.y = 700;
+        cat.x = 500;
+        cat.vx = 0;
+        cat.vy = 0;
+        app.stage.addChild(cat);
+
+        //Create bone sprite
+
+        bone1 = new Sprite(resources["media/64527.png"].texture);
+        bone1.y=0;
+        bone1.x= Math.floor((Math.random()*1000-bone1.length)+1);
+        bone1.vx = 0;
+        bone1.vy = 4;
+        app.stage.addChild(bone1);
+
+        bone2 = new Sprite(resources["media/64527.png"].texture);
+        bone2.y=0;
+        bone2.x=Math.floor((Math.random()*1000-bone1.length)+1);
+        bone2.vx = 0;
+        bone2.vy = 6;
+        app.stage.addChild(bone2);
+
+        bone3 = new Sprite(resources["media/64527.png"].texture);
+        bone3.y=0;
+        bone3.x=Math.floor((Math.random()*1000-bone1.length)+1);
+        bone3.vx = 0;
+        bone3.vy = 5;
+        app.stage.addChild(bone3);
+
+        bone = [bone1,bone2,bone3];
+
+
+        //Capture the keyboard arrow keys
+        let left = keyboard(37),
+            up = keyboard(38),
+            right = keyboard(39),
+            down = keyboard(40);
+
+        //Left arrow key `press` method
+        left.press = () => {
+            //Change the cat's velocity when the key is pressed
+            cat.vx = -5;
+            cat.vy = 0;
+        };
+
+        //Left arrow key `release` method
+        left.release = () => {
+            //If the left arrow has been released, and the right arrow isn't down,
+            //and the cat isn't moving vertically:
+            //Stop the cat
+            if (!right.isDown && cat.vy === 0) {
+                cat.vx = 0;
+            }
+        };
+
+        //Up
+        up.press = () => {
+            cat.vy = -5;
+            cat.vx = 0;
+        };
+        up.release = () => {
+            if (!down.isDown && cat.vx === 0) {
+                cat.vy = 0;
+            }
+        };
+
+        //Right
+        right.press = () => {
+            cat.vx = 5;
+            cat.vy = 0;
+        };
+        right.release = () => {
+            if (!left.isDown && cat.vy === 0) {
+                cat.vx = 0;
+            }
+        };
+
+        //Down
+        down.press = () => {
+            cat.vy = 5;
+            cat.vx = 0;
+        };
+        down.release = () => {
+            if (!up.isDown && cat.vx === 0) {
+                cat.vy = 0;
+            }
+        };
+
+        //Set the game state
+        state = play;
+
+        //Start the game loop
+        app.ticker.add(delta => gameLoop(delta));
+    }
+
+    function gameLoop(delta){
+
+        //Update the current game state:
+        state(delta);
+    }
+
+    function play(delta) {
+
+        //Use the cat's velocity to make it move
+        cat.x += cat.vx;
+        cat.y += cat.vy;
+        var i;
+        var points=0;
+        for (i = 0; i < bone.length; i++) {
+            if (hitTestRectangle(cat, bone[i])) {
+
+                //if there's a collision, change the message text
+                //and tint the box red
+                alert(points);
+                bone[i].y=0;
+                bone[i].x=Math.floor((Math.random() * 1000-bone[i].length) + 1);
+                bone[i].vy=Math.floor((Math.random() * 10) + 1);
+                points++;
+            } else {
+
+                //if there's no collision, reset the message
+            }
+            if (bone[i].y>750-bone[i].height){
+                bone[i].y=0;
+                bone[i].x=Math.floor((Math.random() * 1000-bone[i].length) + 1);
+                bone[i].vy=Math.floor((Math.random() * 10) + 1);
+            }
+            bone[i].y+=bone[i].vy;
+        }
+        if (cat.x>1000-cat.width){
+            cat.x=1000-cat.width;
+
+        }
+        else if (cat.x<0)
+        {
+            cat.x=0;
+        }
+        else if (cat.y>750-cat.height){
+            cat.y=750-cat.height;
+        }
+        else if (cat.y<0)
+        {
+            cat.y=0;
+        }
+    }
+
+    function hitTestRectangle(r1, r2) {
+
+        //Define the variables we'll need to calculate
+        let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;
+
+        //hit will determine whether there's a collision
+        hit = false;
+
+        //Find the center points of each sprite
+        r1.centerX = r1.x + r1.width / 2;
+        r1.centerY = r1.y + r1.height / 2;
+        r2.centerX = r2.x + r2.width / 2;
+        r2.centerY = r2.y + r2.height / 2;
+
+        //Find the half-widths and half-heights of each sprite
+        r1.halfWidth = r1.width / 2;
+        r1.halfHeight = r1.height / 2;
+        r2.halfWidth = r2.width / 2;
+        r2.halfHeight = r2.height / 2;
+
+        //Calculate the distance vector between the sprites
+        vx = r1.centerX - r2.centerX;
+        vy = r1.centerY - r2.centerY;
+
+        //Figure out the combined half-widths and half-heights
+        combinedHalfWidths = r1.halfWidth + r2.halfWidth;
+        combinedHalfHeights = r1.halfHeight + r2.halfHeight;
+
+        //Check for a collision on the x axis
+        if (Math.abs(vx) < combinedHalfWidths) {
+
+            //A collision might be occuring. Check for a collision on the y axis
+            if (Math.abs(vy) < combinedHalfHeights) {
+
+                //There's definitely a collision happening
+                hit = true;
+            } else {
+
+                //There's no collision on the y axis
+                hit = false;
+            }
+        } else {
+
+            //There's no collision on the x axis
+            hit = false;
+        }
+
+        //`hit` will be either `true` or `false`
+        return hit;
+    };
+
+    //The `keyboard` helper function
+    function keyboard(keyCode) {
+        var key = {};
+        key.code = keyCode;
+        key.isDown = false;
+        key.isUp = true;
+        key.press = undefined;
+        key.release = undefined;
+        //The `downHandler`
+        key.downHandler = event => {
+            if (event.keyCode === key.code) {
+                if (key.isUp && key.press) key.press();
+                key.isDown = true;
+                key.isUp = false;
+            }
+            event.preventDefault();
+        };
+
+        //The `upHandler`
+        key.upHandler = event => {
+            if (event.keyCode === key.code) {
+                if (key.isDown && key.release) key.release();
+                key.isDown = false;
+                key.isUp = true;
+            }
+            event.preventDefault();
+        };
+
+        //Attach event listeners
+        window.addEventListener(
+            "keydown", key.downHandler.bind(key), false
+        );
+        window.addEventListener(
+            "keyup", key.upHandler.bind(key), false
+        );
+        return key;
+    }
+
+</script>
+</div>
+<div class="col-1"></div>
+</body>
+</html>

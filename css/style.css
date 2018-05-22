@@ -1,0 +1,97 @@
+.titre{
+    color: #ffffff;
+    margin-left: 10px;
+}
+.photoportfolio{
+    margin: 0;
+    height: 100%;
+    width: 100%;
+}
+.mayeule{
+    width: 100%;
+}
+
+#pattechien{
+    background-color: #4b4b4b;
+}
+#plus{
+    margin-right: 5px;
+}
+.centre{
+    width: 100%;
+}
+
+@media only screen and (max-device-width: 480px){
+    #moer{
+        color: white;
+        background-color: #0c5460;
+        font-size: 18px;
+        text-align: justify;
+        padding-right: 5px;
+        padding-left: 5px;
+
+    }
+    .aligner{
+        vertical-align: top;
+    }
+    .favicon{
+        height: 40px;
+        width: 40px;
+
+    }
+    .bas{
+        padding-bottom: 25px;
+    }
+    .haut{
+        padding-top: 25px;
+    }
+}
+@media screen and (min-width: 481px) and (max-width: 1199px) {
+    #moer{
+        color: lightcoral;
+        background-color: black;
+        font-size: 20px;
+        text-align: justify;
+        padding-right: 7px;
+        padding-left: 7px;
+
+    }
+
+    .favicon{
+        height: 50px;
+        width: 50px;
+
+    }
+    .bas{
+        padding-bottom: 55px;
+    }
+    .haut{
+        padding-top: 55px;
+    }
+    .formulaire{
+        height: 100px;
+        font-size: 15px;
+    }
+}
+@media screen and (min-width: 1200px) {
+    #moer{
+        background-color: #0c5460;
+        font-size: 24px;
+        text-align: justify;
+        padding-right: 10px;
+        padding-left: 10px;
+
+    }
+    .favicon{
+        height: 50px;
+        width: 50px;
+
+    }
+    .bas{
+        padding-bottom: 115px;
+    }
+    .haut{
+        padding-top: 115px;
+    }
+}
+
